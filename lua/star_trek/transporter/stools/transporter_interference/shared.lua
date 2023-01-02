@@ -183,7 +183,6 @@ function TOOL:BuildCPanel(panel)
 	typeof:AddChoice("Hyperonic Radiation")
 	typeof:AddChoice("Electromagnetic")
 	typeof:AddChoice("Trinimbic")
-    typeof:AddChoice("Shield")
 	typeof:ChooseOptionID(1)
 
 	self:AddItem(typeof)
