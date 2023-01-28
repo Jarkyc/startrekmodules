@@ -19,6 +19,8 @@
 if not istable(INTERFACE) then Star_Trek:LoadAllModules() return end
 local SELF = INTERFACE
 
+include("util.lua")
+
 SELF.BaseInterface = "base"
 
 function SELF:Open(ent)
@@ -51,15 +53,19 @@ function SELF:Open(ent)
 	end
 
 	local sRow1 = window:CreateSecondaryButtonRow(32)
-	window:AddButtonToRow(sRow1, "Data Display", nil, Star_Trek.LCARS.ColorOrange, Star_Trek.LCARS.ColorOrange, false, false, function()
+	window:AddButtonToRow(sRow1, "Data Display", nil, Star_Trek.LCARS.ColorBlue, Star_Trek.LCARS.ColorOrange, false, false, function(ply, buttonData)
+		self:ButtonPressed(window, ply, buttonData)
 	end)
-	window:AddButtonToRow(sRow1, "Personal Database", nil, Star_Trek.LCARS.ColorLightBlue, Star_Trek.LCARS.ColorOrange, true, false, function()
+	window:AddButtonToRow(sRow1, "Personal Database", nil, Star_Trek.LCARS.ColorLightBlue, Star_Trek.LCARS.ColorOrange, false, false, function(ply, buttonData)
+		self:ButtonPressed(window, ply, buttonData)
 	end)
 
 	local sRow2 = window:CreateSecondaryButtonRow(32)
-	window:AddButtonToRow(sRow2, "Comms System", nil, Star_Trek.LCARS.ColorBlue, Star_Trek.LCARS.ColorOrange, true, false, function()
+	window:AddButtonToRow(sRow2, "Comms System", nil, Star_Trek.LCARS.ColorLightBlue, Star_Trek.LCARS.ColorOrange, true, false, function(ply, buttonData)
+		self:ButtonPressed(window, ply, buttonData)
 	end)
-	window:AddButtonToRow(sRow2, "Force Fields", nil, Star_Trek.LCARS.ColorLightBlue, Star_Trek.LCARS.ColorOrange, true, false, function()
+	window:AddButtonToRow(sRow2, "Force Fields", nil, Star_Trek.LCARS.ColorBlue, Star_Trek.LCARS.ColorOrange, false, false, function(ply, buttonData)
+		self:ButtonPressed(window, ply, buttonData)
 	end)
 
 	local sRow3 = window:CreateSecondaryButtonRow(32)
@@ -69,13 +75,17 @@ function SELF:Open(ent)
 	end)
 
 	local w2 = width - w - 1
+	self.SecondaryWindowPos = Vector((width - w2) / 2, 0, 0)
+	self.SecondaryWindowScale = scale
+	self.SecondaryWindowWidth = (w2 - 1) * scale
+	self.SecondaryWindowHeight = h * scale
 	local success2, mainWindow = Star_Trek.LCARS:CreateWindow(
 		"log_entry",
-		Vector((width - w2) / 2, 0, 0),
+		self.SecondaryWindowPos,
 		Angle(),
 		scale,
-		(w2 - 1) * scale,
-		h * scale,
+		self.SecondaryWindowWidth,
+		self.SecondaryWindowHeight,
 		function(windowData, interfaceData, ply, buttonId)
 		end,
 		true,
@@ -92,3 +102,15 @@ end
 function Star_Trek.LCARS:OpenWallpanelMenu()
 	Star_Trek.LCARS:OpenInterface(TRIGGER_PLAYER, CALLER, "wallpanel")
 end
+
+function SELF:ButtonPressed(windowData, ply, buttonData)
+	for _, button in pairs(windowData.Buttons) do
+		button.Selected = false
+	end
+	buttonData.Selected = true
+
+	newWindow = self:CreateTestWindow()
+	newWindow.Id = self.Windows[2].Id
+	newWindow.Interface = self.Windows[2].Interface
+	newWindow:Update()
+end 	
