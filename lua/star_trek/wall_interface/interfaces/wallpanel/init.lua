@@ -109,7 +109,9 @@ function SELF:ButtonPressed(windowData, ply, buttonData)
 	end
 	buttonData.Selected = true
 
-	newWindow = self:CreateTestWindow()
+	mainWindow = self.Windows[1]
+
+	newWindow = self:OpenPage(ply, buttonData.Name, mainWindow)
 	newWindow.Id = self.Windows[2].Id
 	newWindow.Interface = self.Windows[2].Interface
 	newWindow:Update()
